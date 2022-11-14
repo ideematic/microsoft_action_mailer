@@ -11,15 +11,15 @@ module MicrosoftActionMailer
       @client_id = client_id
     end
 
-    def send_mail!(token, email_addresses, subject, body)
+    def send_mail!(token, mail)
       payload = {
         'message' => {
-          'subject' => subject,
+          'subject' => mail.subject,
           'body' => {
             'contentType' => 'HTML',
-            'content' => body
+            'content' => mail.html_part.decoded
           },
-          'toRecipients' => email_addresses.map { |mail| {'emailAddress' => {'address' => mail}} }
+          'toRecipients' => mail.to.map { |mail| {'emailAddress' => {'address' => mail}} }
         },
         'saveToSentItems' => 'false'
       }
@@ -32,7 +32,7 @@ module MicrosoftActionMailer
     def request_new_token(refresh_token)
       payload = {
         client_id: @client_id,
-        scope: 'offline_access Mail.Send',
+        scope: 'Mail.Read Mail.Send User.Read profile openid email',
         refresh_token: refresh_token,
         grant_type: 'refresh_token'
       }

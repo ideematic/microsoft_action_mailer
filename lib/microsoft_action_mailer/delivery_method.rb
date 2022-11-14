@@ -19,7 +19,7 @@ module MicrosoftActionMailer
 
     def deliver! mail, opts = {}
       begin
-        @client_api.send_mail! @token_storage.get('@@MicrosoftActionMailer/Token'), mail.to, mail.subject, mail.body.encoded
+        @client_api.send_mail! @token_storage.get('@@MicrosoftActionMailer/Token'), mail
       rescue RestClient::Unauthorized => e
         rsp = @client_api.request_new_token(@token_storage.get('@@MicrosoftActionMailer/RefreshToken'))
         @token_storage.set('@@MicrosoftActionMailer/Token', rsp['access_token'])
